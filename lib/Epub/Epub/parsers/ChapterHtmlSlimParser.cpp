@@ -53,7 +53,8 @@ void ChapterHtmlSlimParser::flushPartWordBuffer() {
   }
   // flush the buffer
   partWordBuffer[partWordBufferIndex] = '\0';
-  currentTextBlock->addWord(partWordBuffer, fontStyle);
+  currentTextBlock->addWord(partWordBuffer, fontStyle, wordIndex);
+  wordIndex++;
   partWordBufferIndex = 0;
 }
 
@@ -161,7 +162,8 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
 
     self->startNewTextBlock(static_cast<TextBlock::Style>(self->paragraphAlignment));
     if (strcmp(name, "li") == 0) {
-      self->currentTextBlock->addWord("\xe2\x80\xa2", EpdFontFamily::REGULAR);
+      self->currentTextBlock->addWord("\xe2\x80\xa2", EpdFontFamily::REGULAR, self->wordIndex);
+      self->wordIndex++;
     }
 
     self->depth += 1;
