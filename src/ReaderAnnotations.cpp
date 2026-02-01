@@ -198,7 +198,11 @@ bool AnnotationStore::addBookmark(const uint16_t spineIndex, const uint32_t word
     return false;
   }
   bookmarks.push_back({spineIndex, wordIndex, pageIndexHint, pageCountHint});
-  return save();
+  if (save()) {
+    return true;
+  }
+  bookmarks.pop_back();
+  return false;
 }
 
 bool AnnotationStore::addHighlight(const uint16_t spineIndex, const uint32_t startWordIndex,
@@ -218,24 +222,40 @@ bool AnnotationStore::addHighlight(const uint16_t spineIndex, const uint32_t sta
   }
   highlights.push_back({spineIndex, rangeStart, rangeEnd, pageIndexHint, pageCountHint});
   sortHighlights();
-  return save();
+  if (save()) {
+    return true;
+  }
+  highlights.pop_back();
+  sortHighlights();
+  return false;
 }
 
 bool AnnotationStore::removeBookmark(const size_t index) {
   if (index >= bookmarks.size()) {
     return false;
   }
+  const Bookmark removed = bookmarks[index];
   bookmarks.erase(bookmarks.begin() + static_cast<long>(index));
-  return save();
+  if (save()) {
+    return true;
+  }
+  bookmarks.insert(bookmarks.begin() + static_cast<long>(index), removed);
+  return false;
 }
 
 bool AnnotationStore::removeHighlight(const size_t index) {
   if (index >= highlights.size()) {
     return false;
   }
+  const Highlight removed = highlights[index];
   highlights.erase(highlights.begin() + static_cast<long>(index));
   sortHighlights();
-  return save();
+  if (save()) {
+    return true;
+  }
+  highlights.insert(highlights.begin() + static_cast<long>(index), removed);
+  sortHighlights();
+  return false;
 }
 
 bool AnnotationStore::loadFromStream(std::istream& input) {
