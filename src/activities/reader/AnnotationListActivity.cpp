@@ -46,6 +46,7 @@ void AnnotationListActivity::loop() {
   if (deleteConfirmActive) {
     if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
       deleteConfirmActive = false;
+      deleteLongPressHandled = false;
       updateRequired = true;
       return;
     }
@@ -60,6 +61,7 @@ void AnnotationListActivity::loop() {
         refreshItems();
       }
       deleteConfirmActive = false;
+      deleteLongPressHandled = false;
       updateRequired = true;
       return;
     }
