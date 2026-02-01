@@ -97,6 +97,15 @@ class CrossPointSettings {
   // Hide battery percentage
   enum HIDE_BATTERY_PERCENTAGE { HIDE_NEVER = 0, HIDE_READER = 1, HIDE_ALWAYS = 2, HIDE_BATTERY_PERCENTAGE_COUNT };
 
+  enum ANNOTATION_SHORTCUT {
+    ANNOTATE_OK_LONG_PRESS = 0,
+    ANNOTATE_BACK_LONG_PRESS = 1,
+    ANNOTATE_LEFT_LONG_PRESS = 2,
+    ANNOTATE_RIGHT_LONG_PRESS = 3,
+    ANNOTATE_DISABLED = 4,
+    ANNOTATION_SHORTCUT_COUNT
+  };
+
   // Sleep screen settings
   uint8_t sleepScreen = DARK;
   // Sleep screen cover mode settings
@@ -137,6 +146,7 @@ class CrossPointSettings {
   uint8_t hideBatteryPercentage = HIDE_NEVER;
   // Long-press chapter skip on side buttons
   uint8_t longPressChapterSkip = 1;
+  uint8_t annotationShortcut = ANNOTATE_OK_LONG_PRESS;
 
   ~CrossPointSettings() = default;
 

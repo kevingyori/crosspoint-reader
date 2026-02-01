@@ -137,6 +137,12 @@ The Settings screen allows you to configure the device's behavior. There are a f
 - **Long-press Chapter Skip**: Set whether long-pressing page turn buttons skip to the next/previous chapter.
   - "Chapter Skip" (default) - Long-pressing skips to next/previous chapter
   - "Page Scroll" - Long-pressing scrolls a page up/down
+- **Annotation Shortcut**: Choose the long-press gesture that opens the annotate menu while reading.
+  - "OK long-press" (default)
+  - "Back long-press"
+  - "Left long-press"
+  - "Right long-press"
+  - "Disabled"
 - Swap the order of the up and down volume buttons from Previous/Next to Next/Previous. This change is only in effect when reading.
 - **Reader Font Family**: Choose the font used for reading:
   - "Bookerly" (default) - Amazon's reading font
@@ -193,6 +199,18 @@ This feature can be disabled in **[Settings](#35-settings)** to help avoid chang
 * **Return to Book Selection:** Press **Back** to close the book and return to the **[Book Selection](#32-book-selection)** screen.
 * **Return to Home:** Press and **hold** the **Back** button to close the book and return to the **[Home](#31-home-screen)** screen.
 * **Chapter Menu:** Press **Confirm** to open the **[Table of Contents/Chapter Selection](#5-chapter-selection-screen)**.
+
+### Bookmarks and Highlights
+* **Open Annotate Menu:** Long-press the configured annotation shortcut (default: **Confirm**).
+* **Add Bookmark:** In the annotate menu, choose **Add bookmark**. A bookmark indicator appears when you return to that page.
+* **Highlight Text:** In the annotate menu, choose **Highlight text**.
+  1. Use the D-pad to move the word cursor.
+  2. Press **Confirm** once to set the start.
+  3. Move the cursor to extend the selection.
+  4. Press **Confirm** again to save the highlight (or **Back** to cancel).
+* **Manage Bookmarks/Highlights:** Press **Confirm** to open the reader menu, then choose **Bookmarks** or **Highlights**.
+  * Press **Confirm** on an item to jump to it.
+  * Long-press **Confirm** to delete an item.
 
 ### Supported Languages
 
