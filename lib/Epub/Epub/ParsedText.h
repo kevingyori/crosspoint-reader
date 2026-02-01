@@ -2,6 +2,7 @@
 
 #include <EpdFontFamily.h>
 
+#include <cstdint>
 #include <functional>
 #include <list>
 #include <memory>
@@ -15,6 +16,7 @@ class GfxRenderer;
 class ParsedText {
   std::list<std::string> words;
   std::list<EpdFontFamily::Style> wordStyles;
+  std::list<uint32_t> wordIndices;
   TextBlock::Style style;
   bool extraParagraphSpacing;
   bool hyphenationEnabled;
@@ -37,7 +39,7 @@ class ParsedText {
       : style(style), extraParagraphSpacing(extraParagraphSpacing), hyphenationEnabled(hyphenationEnabled) {}
   ~ParsedText() = default;
 
-  void addWord(std::string word, EpdFontFamily::Style fontStyle);
+  void addWord(std::string word, EpdFontFamily::Style fontStyle, uint32_t wordIndex);
   void setStyle(const TextBlock::Style style) { this->style = style; }
   TextBlock::Style getStyle() const { return style; }
   size_t size() const { return words.size(); }

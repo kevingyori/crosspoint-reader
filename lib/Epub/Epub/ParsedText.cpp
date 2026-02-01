@@ -49,11 +49,12 @@ uint16_t measureWordWidth(const GfxRenderer& renderer, const int fontId, const s
 
 }  // namespace
 
-void ParsedText::addWord(std::string word, const EpdFontFamily::Style fontStyle) {
+void ParsedText::addWord(std::string word, const EpdFontFamily::Style fontStyle, const uint32_t wordIndex) {
   if (word.empty()) return;
 
   words.push_back(std::move(word));
   wordStyles.push_back(fontStyle);
+  wordIndices.push_back(wordIndex);
 }
 
 // Consumes data to minimize memory usage
@@ -268,8 +269,10 @@ bool ParsedText::hyphenateWordAtIndex(const size_t wordIndex, const int availabl
   // Get iterators to target word and style.
   auto wordIt = words.begin();
   auto styleIt = wordStyles.begin();
+  auto indexIt = wordIndices.begin();
   std::advance(wordIt, wordIndex);
   std::advance(styleIt, wordIndex);
+  std::advance(indexIt, wordIndex);
 
   const std::string& word = *wordIt;
   const auto style = *styleIt;
@@ -317,8 +320,10 @@ bool ParsedText::hyphenateWordAtIndex(const size_t wordIndex, const int availabl
   // Insert the remainder word (with matching style) directly after the prefix.
   auto insertWordIt = std::next(wordIt);
   auto insertStyleIt = std::next(styleIt);
+  auto insertIndexIt = std::next(indexIt);
   words.insert(insertWordIt, remainder);
   wordStyles.insert(insertStyleIt, style);
+  wordIndices.insert(insertIndexIt, *indexIt);
 
   // Update cached widths to reflect the new prefix/remainder pairing.
   wordWidths[wordIndex] = static_cast<uint16_t>(chosenWidth);
@@ -369,14 +374,18 @@ void ParsedText::extractLine(const size_t breakIndex, const int pageWidth, const
   // Iterators always start at the beginning as we are moving content with splice below
   auto wordEndIt = words.begin();
   auto wordStyleEndIt = wordStyles.begin();
+  auto wordIndexEndIt = wordIndices.begin();
   std::advance(wordEndIt, lineWordCount);
   std::advance(wordStyleEndIt, lineWordCount);
+  std::advance(wordIndexEndIt, lineWordCount);
 
   // *** CRITICAL STEP: CONSUME DATA USING SPLICE ***
   std::list<std::string> lineWords;
   lineWords.splice(lineWords.begin(), words, words.begin(), wordEndIt);
   std::list<EpdFontFamily::Style> lineWordStyles;
   lineWordStyles.splice(lineWordStyles.begin(), wordStyles, wordStyles.begin(), wordStyleEndIt);
+  std::list<uint32_t> lineWordIndices;
+  lineWordIndices.splice(lineWordIndices.begin(), wordIndices, wordIndices.begin(), wordIndexEndIt);
 
   for (auto& word : lineWords) {
     if (containsSoftHyphen(word)) {
@@ -384,5 +393,6 @@ void ParsedText::extractLine(const size_t breakIndex, const int pageWidth, const
     }
   }
 
-  processLine(std::make_shared<TextBlock>(std::move(lineWords), std::move(lineXPos), std::move(lineWordStyles), style));
+  processLine(std::make_shared<TextBlock>(std::move(lineWords), std::move(lineXPos), std::move(lineWordStyles),
+                                          std::move(lineWordIndices), style));
 }

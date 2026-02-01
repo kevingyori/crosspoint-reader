@@ -5,9 +5,10 @@
 
 void TextBlock::render(const GfxRenderer& renderer, const int fontId, const int x, const int y) const {
   // Validate iterator bounds before rendering
-  if (words.size() != wordXpos.size() || words.size() != wordStyles.size()) {
-    Serial.printf("[%lu] [TXB] Render skipped: size mismatch (words=%u, xpos=%u, styles=%u)\n", millis(),
-                  (uint32_t)words.size(), (uint32_t)wordXpos.size(), (uint32_t)wordStyles.size());
+  if (words.size() != wordXpos.size() || words.size() != wordStyles.size() || words.size() != wordIndices.size()) {
+    Serial.printf("[%lu] [TXB] Render skipped: size mismatch (words=%u, xpos=%u, styles=%u, indices=%u)\n", millis(),
+                  (uint32_t)words.size(), (uint32_t)wordXpos.size(), (uint32_t)wordStyles.size(),
+                  (uint32_t)wordIndices.size());
     return;
   }
 
@@ -25,9 +26,9 @@ void TextBlock::render(const GfxRenderer& renderer, const int fontId, const int 
 }
 
 bool TextBlock::serialize(FsFile& file) const {
-  if (words.size() != wordXpos.size() || words.size() != wordStyles.size()) {
-    Serial.printf("[%lu] [TXB] Serialization failed: size mismatch (words=%u, xpos=%u, styles=%u)\n", millis(),
-                  words.size(), wordXpos.size(), wordStyles.size());
+  if (words.size() != wordXpos.size() || words.size() != wordStyles.size() || words.size() != wordIndices.size()) {
+    Serial.printf("[%lu] [TXB] Serialization failed: size mismatch (words=%u, xpos=%u, styles=%u, indices=%u)\n",
+                  millis(), words.size(), wordXpos.size(), wordStyles.size(), wordIndices.size());
     return false;
   }
 
@@ -36,6 +37,7 @@ bool TextBlock::serialize(FsFile& file) const {
   for (const auto& w : words) serialization::writeString(file, w);
   for (auto x : wordXpos) serialization::writePod(file, x);
   for (auto s : wordStyles) serialization::writePod(file, s);
+  for (auto idx : wordIndices) serialization::writePod(file, idx);
 
   // Block style
   serialization::writePod(file, style);
@@ -48,6 +50,7 @@ std::unique_ptr<TextBlock> TextBlock::deserialize(FsFile& file) {
   std::list<std::string> words;
   std::list<uint16_t> wordXpos;
   std::list<EpdFontFamily::Style> wordStyles;
+  std::list<uint32_t> wordIndices;
   Style style;
 
   // Word count
@@ -63,12 +66,15 @@ std::unique_ptr<TextBlock> TextBlock::deserialize(FsFile& file) {
   words.resize(wc);
   wordXpos.resize(wc);
   wordStyles.resize(wc);
+  wordIndices.resize(wc);
   for (auto& w : words) serialization::readString(file, w);
   for (auto& x : wordXpos) serialization::readPod(file, x);
   for (auto& s : wordStyles) serialization::readPod(file, s);
+  for (auto& idx : wordIndices) serialization::readPod(file, idx);
 
   // Block style
   serialization::readPod(file, style);
 
-  return std::unique_ptr<TextBlock>(new TextBlock(std::move(words), std::move(wordXpos), std::move(wordStyles), style));
+  return std::unique_ptr<TextBlock>(
+      new TextBlock(std::move(words), std::move(wordXpos), std::move(wordStyles), std::move(wordIndices), style));
 }

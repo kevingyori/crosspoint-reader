@@ -37,6 +37,7 @@ class ChapterHtmlSlimParser {
   uint16_t viewportWidth;
   uint16_t viewportHeight;
   bool hyphenationEnabled;
+  uint32_t wordIndex = 0;
 
   void startNewTextBlock(TextBlock::Style style);
   void flushPartWordBuffer();

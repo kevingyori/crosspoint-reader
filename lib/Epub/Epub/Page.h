@@ -31,6 +31,7 @@ class PageLine final : public PageElement {
   void render(GfxRenderer& renderer, int fontId, int xOffset, int yOffset) override;
   bool serialize(FsFile& file) override;
   static std::unique_ptr<PageLine> deserialize(FsFile& file);
+  const TextBlock& getBlock() const { return *block; }
 };
 
 class Page {
